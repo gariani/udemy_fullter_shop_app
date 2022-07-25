@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/components/badget.dart';
 import 'package:shop_app/components/product_grid.dart';
+import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product_list.dart';
 
 enum FilterOptions {
@@ -8,9 +10,14 @@ enum FilterOptions {
   all,
 }
 
-class ProductOverviewPage extends StatelessWidget {
+class ProductOverviewPage extends StatefulWidget {
   const ProductOverviewPage({Key? key}) : super(key: key);
 
+  @override
+  State<ProductOverviewPage> createState() => _ProductOverviewPageState();
+}
+
+class _ProductOverviewPageState extends State<ProductOverviewPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);
@@ -38,7 +45,19 @@ class ProductOverviewPage extends StatelessWidget {
                 provider.showAll();
               }
             },
-          )
+          ),
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                //Navigator.of(context).pushNamed(AppRoutes.ca)
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
+            builder: (context, cart, child) => Badget(
+              value: cart.itemCount,
+              child: child!,
+            ),
+          ),
         ],
       ),
       body: const ProductGrid(),
