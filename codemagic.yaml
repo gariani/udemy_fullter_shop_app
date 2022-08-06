@@ -1,0 +1,4 @@
+workflows:
+  android-workflow:
+    name: Shopping
+    max_build_duration: 120
