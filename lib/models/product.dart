@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-class Product extends ChangeNotifier {
+class Product with ChangeNotifier {
   final String id;
   final String name;
   final String description;
   final double price;
   final String imageUrl;
-
-  bool isFavortire;
+  bool isFavorite;
 
   Product({
     required this.id,
@@ -15,11 +14,11 @@ class Product extends ChangeNotifier {
     required this.description,
     required this.price,
     required this.imageUrl,
-    this.isFavortire = false,
+    this.isFavorite = false,
   });
 
   void toggleFavorite() {
-    isFavortire = !isFavortire;
+    isFavorite = !isFavorite;
     notifyListeners();
   }
 }
