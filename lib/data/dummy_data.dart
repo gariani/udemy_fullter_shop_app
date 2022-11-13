@@ -1,4 +1,4 @@
-import 'package:shop/models/product.dart';
+import 'package:shop_app/models/product.dart';
 
 final dummyProducts = [
   Product(

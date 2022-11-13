@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop/providers/counter.dart';
+
+import '../providers/counter.dart';
 
 class CounterPage extends StatefulWidget {
   const CounterPage({Key? key}) : super(key: key);

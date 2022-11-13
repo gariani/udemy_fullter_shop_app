@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product_list.dart';
 import 'package:shop_app/pages/cart_page.dart';
+import 'package:shop_app/pages/orders_page.dart';
 import 'package:shop_app/pages/product_detail_page.dart';
+import 'package:shop_app/pages/product_form_page.dart';
+import 'package:shop_app/pages/product_page.dart';
 import 'package:shop_app/pages/products_overview_page.dart';
 import 'package:shop_app/utils/app_routes.dart';
 
@@ -35,10 +38,14 @@ class MyApp extends StatelessWidget {
           colorScheme: theme.colorScheme.copyWith(secondary: Colors.deepOrange),
           fontFamily: 'Lato',
         ),
-        home: const MyHomePage(),
+        initialRoute: AppRoutes.home,
         routes: {
-          AppRoutes.productDetails: (context) => const ProductDetailPage(),
+          AppRoutes.productDetail: (context) => const ProductDetailPage(),
           AppRoutes.cart: (context) => const CartPage(),
+          AppRoutes.home: (context) => const MyHomePage(),
+          AppRoutes.orders: (context) => const OrdersPage(),
+          AppRoutes.product: (context) => const ProductPage(),
+          AppRoutes.productForm: (context) => const ProductFormPage(),
         },
       ),
     );
@@ -56,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return const SafeArea(
-      child: ProductOverviewPage(),
+      child: ProductsOverviewPage(),
     );
   }
 }
