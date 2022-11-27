@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/models/api_servers.dart';
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product_list.dart';
 import 'package:shop_app/pages/cart_page.dart';
@@ -9,9 +13,21 @@ import 'package:shop_app/pages/product_form_page.dart';
 import 'package:shop_app/pages/product_page.dart';
 import 'package:shop_app/pages/products_overview_page.dart';
 import 'package:shop_app/utils/app_routes.dart';
+import 'package:get_it/get_it.dart';
 
-void main() {
+GetIt getIt = GetIt.instance;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadSettings();
   runApp(const MyApp());
+}
+
+Future loadSettings() async {
+  final file = await rootBundle.loadString('assets/api/api.json');
+  final jsonvalue = jsonDecode(file);
+  ApiServer api = ApiServer.fromJson(jsonvalue);
+  getIt.registerSingleton<ApiServer>(api, signalsReady: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +36,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData();
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

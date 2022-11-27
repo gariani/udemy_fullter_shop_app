@@ -15,7 +15,7 @@ class ApiServer {
 
 @JsonSerializable()
 class Api {
-  List<Firebase>? firebase;
+  Firebase? firebase;
 
   Api({this.firebase});
 

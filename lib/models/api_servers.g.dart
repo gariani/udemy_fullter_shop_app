@@ -17,9 +17,9 @@ Map<String, dynamic> _$ApiServerToJson(ApiServer instance) => <String, dynamic>{
     };
 
 Api _$ApiFromJson(Map<String, dynamic> json) => Api(
-      firebase: (json['firebase'] as List<dynamic>?)
-          ?.map((e) => Firebase.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      firebase: json['firebase'] == null
+          ? null
+          : Firebase.fromJson(json['firebase'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ApiToJson(Api instance) => <String, dynamic>{
