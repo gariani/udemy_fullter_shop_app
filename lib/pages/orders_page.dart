@@ -3,29 +3,45 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/components/app_drawer.dart';
 import 'package:shop_app/models/order_list.dart';
 
-class OrdersPage extends StatelessWidget {
+import '../components/order.dart';
+
+class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Provider<OrderList>(
-        create: (order) => OrderList(),
-        // we use `builder` to obtain a new `BuildContext` that has access to the provider
-        builder: (context, child) {
-          // final OrderList orders =
-          //     Provider.of<OrderList>(context, listen: false);
+  State<OrdersPage> createState() => _OrdersPageState();
+}
 
-          return Scaffold(
-              appBar: AppBar(
-                title: const Text('Meus Pedidos'),
-              ),
-              drawer: const AppDrawer(),
-              body: Container()
-              // ListView.builder(
-              // itemCount: orders.itemsCount,
-              // itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
-              // ),
-              );
-        });
+class _OrdersPageState extends State<OrdersPage> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<OrderList>(
+      context,
+      listen: false,
+    ).loadOrders().then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final OrderList orders = Provider.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Meus Pedidos'),
+      ),
+      drawer: const AppDrawer(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: orders.itemsCount,
+              itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
+            ),
+    );
   }
 }

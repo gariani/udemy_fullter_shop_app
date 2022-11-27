@@ -25,7 +25,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {});
   }
 
-  void _submitForm() {
+  Future<void> _submitForm(BuildContext context) async {
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
@@ -38,32 +38,30 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _isLoading = true;
     });
 
-    Provider.of<ProductList>(context, listen: false)
-        .saveProduct(_formData)
-        .catchError(
-      (error) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Ocorreu um erro'),
-            content: Text(error.toString()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Ok'),
-              ),
-            ],
-          ),
-        );
-      },
-    ).then(
-      (value) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      },
-    );
+    try {
+      await Provider.of<ProductList>(context, listen: false)
+          .saveProduct(_formData);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Ocorreu um erro'),
+          content: Text(error.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   bool isValidImageUrl(String url) {
@@ -117,7 +115,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
         title: const Text('Formulário de Produto'),
         actions: [
           IconButton(
-            onPressed: _submitForm,
+            onPressed: () async {
+              await _submitForm(context);
+            },
             icon: const Icon(Icons.save),
           ),
         ],
@@ -210,7 +210,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             textInputAction: TextInputAction.done,
                             controller: _imageUrlController,
                             onFieldSubmitted: (value) {
-                              _submitForm();
+                              _submitForm(context);
                             },
                             validator: (image) {
                               final imageUrl = image ?? '';

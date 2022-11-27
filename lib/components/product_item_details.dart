@@ -49,6 +49,7 @@ class ProductItemDetails extends StatelessWidget {
   }
 
   Future confirmRemove(BuildContext context) async {
+    final msg = ScaffoldMessenger.of(context);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -69,6 +70,21 @@ class ProductItemDetails extends StatelessWidget {
           )
         ],
       ),
-    );
+    ).then((value) async {
+      if (value ?? false) {
+        try {
+          await Provider.of<ProductList>(
+            context,
+            listen: false,
+          ).removeProduct(product);
+        } catch (error) {
+          msg.showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+            ),
+          );
+        }
+      }
+    });
   }
 }
