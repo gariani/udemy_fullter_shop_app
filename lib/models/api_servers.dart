@@ -27,8 +27,9 @@ class Api {
 @JsonSerializable()
 class Firebase {
   String? url;
+  String? signupNewUser;
 
-  Firebase({this.url});
+  Firebase({this.url, this.signupNewUser});
 
   factory Firebase.fromJson(Map<String, dynamic> json) =>
       _$FirebaseFromJson(json);

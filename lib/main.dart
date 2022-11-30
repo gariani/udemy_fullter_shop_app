@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/api_servers.dart';
+import 'package:shop_app/models/auth.dart';
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/order_list.dart';
 import 'package:shop_app/models/product_list.dart';
+import 'package:shop_app/pages/auth_page.dart';
 import 'package:shop_app/pages/cart_page.dart';
 import 'package:shop_app/pages/orders_page.dart';
 import 'package:shop_app/pages/product_detail_page.dart';
@@ -47,6 +49,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => OrderList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Auth(),
         )
       ],
       child: MaterialApp(
@@ -54,11 +59,12 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.purple,
-          colorScheme: theme.colorScheme.copyWith(secondary: Colors.deepOrange),
+          colorScheme: theme.colorScheme.copyWith(secondary: Colors.white),
           fontFamily: 'Lato',
         ),
-        initialRoute: AppRoutes.home,
+        initialRoute: AppRoutes.auth,
         routes: {
+          AppRoutes.auth: (context) => const AuthPage(),
           AppRoutes.productDetail: (context) => const ProductDetailPage(),
           AppRoutes.cart: (context) => const CartPage(),
           AppRoutes.home: (context) => const MyHomePage(),

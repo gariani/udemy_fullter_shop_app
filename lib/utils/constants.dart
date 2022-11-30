@@ -6,4 +6,6 @@ class Constants {
       '${getIt<ApiServer>().api?.firebase?.url}/products';
   static String orderBaseURL =
       '${getIt<ApiServer>().api?.firebase?.url}/orders';
+  static String signupURL =
+      '${getIt<ApiServer>().api?.firebase?.signupNewUser}';
 }

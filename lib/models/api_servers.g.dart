@@ -28,8 +28,10 @@ Map<String, dynamic> _$ApiToJson(Api instance) => <String, dynamic>{
 
 Firebase _$FirebaseFromJson(Map<String, dynamic> json) => Firebase(
       url: json['url'] as String?,
+      signupNewUser: json['signupNewUser'] as String?,
     );
 
 Map<String, dynamic> _$FirebaseToJson(Firebase instance) => <String, dynamic>{
       'url': instance.url,
+      'signupNewUser': instance.signupNewUser,
     };
