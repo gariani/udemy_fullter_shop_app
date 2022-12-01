@@ -28,8 +28,9 @@ class Api {
 class Firebase {
   String? url;
   String? signupNewUser;
+  String? signinUser;
 
-  Firebase({this.url, this.signupNewUser});
+  Firebase({this.url, this.signupNewUser, this.signinUser});
 
   factory Firebase.fromJson(Map<String, dynamic> json) =>
       _$FirebaseFromJson(json);

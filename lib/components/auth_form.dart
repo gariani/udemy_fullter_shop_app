@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../exceptions/auth_exception.dart';
 import '../models/auth.dart';
 
 enum AuthMode { signup, login }
@@ -35,7 +36,23 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 
-  Future<void> _submit(BuildContext context) async {
+  void _showErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ocorreu um erro'),
+        content: Text(errorMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('fechar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submit() async {
     final isValidForm = _formKey.currentState?.validate() ?? false;
 
     if (!isValidForm) {
@@ -49,14 +66,25 @@ class _AuthFormState extends State<AuthForm> {
     _formKey.currentState?.save();
     Auth auth = Provider.of(context, listen: false);
 
-    if (_isLogin()) {
-    } else {
-      await auth.signup(
-        _authData['email']!,
-        _authData['password']!,
-      );
-    }
+    f
 
+    try {
+      if (_isLogin()) {
+        await auth.signin(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      } else {
+        await auth.signup(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      }
+    } on AuthException catch (error) {
+      _showErrorDialog(error.toString());
+    } catch (error) {
+      _showErrorDialog('ocorreu um erro inesperado');
+    }
     setState(() {
       _isLoading = false;
     });
@@ -144,9 +172,7 @@ class _AuthFormState extends State<AuthForm> {
                           vertical: 8,
                         ),
                       ),
-                      onPressed: () {
-                        _submit(context);
-                      },
+                      onPressed: _submit,
                       child: Text(_isLogin() ? 'entrar' : 'registrar'),
                     ),
               const Spacer(),

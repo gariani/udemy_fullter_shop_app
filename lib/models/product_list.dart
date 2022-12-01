@@ -10,12 +10,16 @@ import 'package:shop_app/models/product.dart';
 import '../utils/constants.dart';
 
 class ProductList with ChangeNotifier {
-  final List<Product> _items = [];
-  final _baseUrl = '${getIt<ApiServer>().api?.firebase?.url}/products';
-
+  // ignore: prefer_final_fields
+  List<Product> _items = [];
+  final String _token;
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
+
+  final _baseUrl = '${getIt<ApiServer>().api?.firebase?.url}/products';
+
+  ProductList(this._token, this._items);
 
   int get itemsCount {
     return _items.length;
@@ -24,8 +28,9 @@ class ProductList with ChangeNotifier {
   Future<void> loadProducts() async {
     _items.clear();
 
-    final response =
-        await http.get(Uri.parse('${Constants.productBaseURL}.json'));
+    final response = await http.get(
+      Uri.parse('${Constants.productBaseURL}.json?auth={$_token}'),
+    );
 
     if (response.body == 'null') return;
 
