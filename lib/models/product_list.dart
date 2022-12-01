@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:shop_app/exceptions/http_exception.dart';
-import 'package:shop_app/main.dart';
-import 'package:shop_app/models/api_servers.dart';
-import 'package:shop_app/models/product.dart';
+import '../exceptions/http_exception.dart';
+import '../main.dart';
+import 'api_servers.dart';
+import 'product.dart';
 
 import '../utils/constants.dart';
 

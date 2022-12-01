@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/components/app_drawer.dart';
-import 'package:shop_app/components/badge.dart';
-import 'package:shop_app/components/product_grid.dart';
-import 'package:shop_app/models/cart.dart';
-import 'package:shop_app/utils/app_routes.dart';
+import '../components/app_drawer.dart';
+import '../components/badge.dart';
+import '../components/product_grid.dart';
+import '../models/cart.dart';
+import '../utils/app_routes.dart';
 
 import '../models/product_list.dart';
 

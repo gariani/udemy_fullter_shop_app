@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
-import 'package:shop_app/exceptions/auth_exception.dart';
-import 'package:shop_app/utils/constants.dart';
+
+import '../exceptions/auth_exception.dart';
+import '../utils/constants.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
