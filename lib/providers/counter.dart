@@ -4,7 +4,9 @@ class CounterState {
   int _value = 0;
 
   void inc() => _value++;
+
   void dec() => _value--;
+
   int get value => _value;
 
   bool diff(CounterState old) {
@@ -13,17 +15,17 @@ class CounterState {
 }
 
 class CounterProvider extends InheritedWidget {
-  final CounterState state = CounterState();
-
   CounterProvider({Key? key, required Widget child})
       : super(key: key, child: child);
 
-  static CounterProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CounterProvider>();
-  }
+  final CounterState state = CounterState();
 
   @override
   bool updateShouldNotify(covariant CounterProvider oldWidget) {
     throw oldWidget.state.diff(state);
+  }
+
+  static CounterProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<CounterProvider>();
   }
 }

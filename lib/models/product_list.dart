@@ -10,16 +10,18 @@ import 'product.dart';
 import '../utils/constants.dart';
 
 class ProductList with ChangeNotifier {
-  // ignore: prefer_final_fields
-  List<Product> _items = [];
-  final String _token;
-  List<Product> get items => [..._items];
-  List<Product> get favoriteItems =>
-      _items.where((prod) => prod.isFavorite).toList();
+  ProductList(this._token, this._items);
 
   final _baseUrl = '${getIt<ApiServer>().api?.firebase?.url}/products';
+  // ignore: prefer_final_fields
+  List<Product> _items = [];
 
-  ProductList(this._token, this._items);
+  final String _token;
+
+  List<Product> get items => [..._items];
+
+  List<Product> get favoriteItems =>
+      _items.where((prod) => prod.isFavorite).toList();
 
   int get itemsCount {
     return _items.length;

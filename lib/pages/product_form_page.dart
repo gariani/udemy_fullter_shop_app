@@ -11,18 +11,61 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
-  final _priceFocus = FocusNode();
   final _descriptionFocus = FocusNode();
-  final _nameFocus = FocusNode();
-  final _imageUrlFocus = FocusNode();
-  final _imageUrlController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
-
+  final _formKey = GlobalKey<FormState>();
+  final _imageUrlController = TextEditingController();
+  final _imageUrlFocus = FocusNode();
   bool _isLoading = false;
+  final _nameFocus = FocusNode();
+  final _priceFocus = FocusNode();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)?.settings.arguments;
+      if (arg != null) {
+        final product = arg as Product;
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['image'] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
+  }
+
+  @override
+  dispose() {
+    _priceFocus.dispose();
+    _descriptionFocus.dispose();
+    _nameFocus.dispose();
+    _imageUrlFocus.removeListener(updateImage);
+    _imageUrlFocus.dispose();
+    _imageUrlController.dispose();
+    super.dispose();
+  }
+
+  @override
+  initState() {
+    super.initState();
+    _imageUrlFocus.addListener(updateImage);
+  }
 
   void updateImage() {
     setState(() {});
+  }
+
+  bool isValidImageUrl(String url) {
+    bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
+    bool endsWithFile = url.toLowerCase().endsWith('.png') ||
+        url.toLowerCase().endsWith('.jpg') ||
+        url.toLowerCase().endsWith('.jpeg');
+    return isValidUrl && endsWithFile;
   }
 
   Future<void> _submitForm(BuildContext context) async {
@@ -62,50 +105,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _isLoading = false;
       });
     }
-  }
-
-  bool isValidImageUrl(String url) {
-    bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
-    bool endsWithFile = url.toLowerCase().endsWith('.png') ||
-        url.toLowerCase().endsWith('.jpg') ||
-        url.toLowerCase().endsWith('.jpeg');
-    return isValidUrl && endsWithFile;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_formData.isEmpty) {
-      final arg = ModalRoute.of(context)?.settings.arguments;
-      if (arg != null) {
-        final product = arg as Product;
-        _formData['id'] = product.id;
-        _formData['name'] = product.name;
-        _formData['price'] = product.price;
-        _formData['description'] = product.description;
-        _formData['image'] = product.imageUrl;
-
-        _imageUrlController.text = product.imageUrl;
-      }
-    }
-  }
-
-  @override
-  initState() {
-    super.initState();
-    _imageUrlFocus.addListener(updateImage);
-  }
-
-  @override
-  dispose() {
-    _priceFocus.dispose();
-    _descriptionFocus.dispose();
-    _nameFocus.dispose();
-    _imageUrlFocus.removeListener(updateImage);
-    _imageUrlFocus.dispose();
-    _imageUrlController.dispose();
-    super.dispose();
   }
 
   @override

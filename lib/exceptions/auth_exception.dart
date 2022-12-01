@@ -1,5 +1,6 @@
 class AuthException implements Exception {
-  final String key;
+  AuthException(this.key);
+
   static const Map<String, String> error = {
     'EMAIL_EXISTS': 'e-mail já cadastrado',
     'OPERATION_NOT_ALLOWED': 'operação não permitida',
@@ -10,7 +11,7 @@ class AuthException implements Exception {
     'USER_DISABLED': 'a conta do usuário foi desabilitada',
   };
 
-  AuthException(this.key);
+  final String key;
 
   @override
   String toString() {

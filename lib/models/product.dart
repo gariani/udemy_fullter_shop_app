@@ -6,13 +6,6 @@ import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
 
 class Product with ChangeNotifier {
-  final String id;
-  final String name;
-  final String description;
-  final double price;
-  final String imageUrl;
-  bool isFavorite;
-
   Product({
     required this.id,
     required this.name,
@@ -22,10 +15,12 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void _toggleFavorite() {
-    isFavorite = !isFavorite;
-    notifyListeners();
-  }
+  final String description;
+  final String id;
+  final String imageUrl;
+  bool isFavorite;
+  final String name;
+  final double price;
 
   Future<void> toggleFavorite() async {
     try {
@@ -42,5 +37,10 @@ class Product with ChangeNotifier {
     } catch (error) {
       _toggleFavorite();
     }
+  }
+
+  void _toggleFavorite() {
+    isFavorite = !isFavorite;
+    notifyListeners();
   }
 }

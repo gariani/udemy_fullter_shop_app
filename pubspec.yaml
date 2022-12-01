@@ -27,23 +27,19 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  bloc: ^8.1.0
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  json_serializable: ^6.5.4
-  json_annotation: ^4.7.0
-  provider: ^6.0.3
   flutter_gen: ^5.1.0+1
   get_it: ^7.2.0
   http: ^0.13.5
-  
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
   intl: ^0.17.0
+  json_annotation: ^4.7.0
+  json_serializable: ^6.5.4
+  provider: ^6.0.3
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   build_runner: ^2.3.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -52,10 +48,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
@@ -67,13 +64,10 @@ flutter:
   assets:
     - assets/api/api.json
   #   - images/a_dot_ham.jpeg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
@@ -89,6 +83,5 @@ flutter:
     - family: Anton
       fonts:
         - asset: assets/fonts/Anton-Regular.ttf
-
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

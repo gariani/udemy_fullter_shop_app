@@ -8,10 +8,10 @@ import '../exceptions/auth_exception.dart';
 import '../utils/constants.dart';
 
 class Auth with ChangeNotifier {
-  String? _token;
   String? _email;
-  String? _uid;
   DateTime? _expireDate;
+  String? _token;
+  String? _uid;
 
   bool get isAuth {
     final isValid = _expireDate?.isAfter(DateTime.now()) ?? false;
@@ -28,6 +28,14 @@ class Auth with ChangeNotifier {
 
   String? get uid {
     return isAuth ? _uid : null;
+  }
+
+  Future<void> signup(String email, String password) async {
+    return _authenticate(email, password, Constants.signupURL);
+  }
+
+  Future<void> signin(String email, String password) async {
+    return _authenticate(email, password, Constants.signinURL);
   }
 
   Future<void> _authenticate(String email, String password, String url) async {
@@ -57,13 +65,5 @@ class Auth with ChangeNotifier {
       );
       notifyListeners();
     }
-  }
-
-  Future<void> signup(String email, String password) async {
-    return _authenticate(email, password, Constants.signupURL);
-  }
-
-  Future<void> signin(String email, String password) async {
-    return _authenticate(email, password, Constants.signinURL);
   }
 }

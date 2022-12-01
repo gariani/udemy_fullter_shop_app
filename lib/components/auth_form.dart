@@ -14,15 +14,23 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final Map<String, String> _authData = {'email': '', 'password': ''};
-  final _formKey = GlobalKey<FormState>();
-
   AuthMode _authMode = AuthMode.login;
-  bool _isLogin() => _authMode == AuthMode.login;
-  bool _isSignup() => _authMode == AuthMode.signup;
+  final _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  final _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = 'test@gmail.com';
+    _passwordController.text = 'test123';
+  }
+
+  bool _isLogin() => _authMode == AuthMode.login;
+
+  bool _isSignup() => _authMode == AuthMode.signup;
 
   void _switchAuthMode() {
     setState(
@@ -86,13 +94,6 @@ class _AuthFormState extends State<AuthForm> {
     setState(() {
       _isLoading = false;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.text = 'test@gmail.com';
-    _passwordController.text = 'test123';
   }
 
   @override

@@ -9,45 +9,6 @@ class ProductItemDetails extends StatelessWidget {
 
   final Product product;
 
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(product.imageUrl),
-      ),
-      title: Text(product.name),
-      trailing: SizedBox(
-        width: 100,
-        child: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              color: Theme.of(context).primaryColor,
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(AppRoutes.productForm, arguments: product);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              color: Theme.of(context).errorColor,
-              onPressed: () async {
-                await confirmRemove(context).then(
-                  (value) {
-                    if (value ?? false) {
-                      Provider.of<ProductList>(context, listen: false)
-                          .removeProduct(product);
-                    }
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future confirmRemove(BuildContext context) async {
     final msg = ScaffoldMessenger.of(context);
     return showDialog(
@@ -86,5 +47,44 @@ class ProductItemDetails extends StatelessWidget {
         }
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(product.imageUrl),
+      ),
+      title: Text(product.name),
+      trailing: SizedBox(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(AppRoutes.productForm, arguments: product);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              color: Theme.of(context).errorColor,
+              onPressed: () async {
+                await confirmRemove(context).then(
+                  (value) {
+                    if (value ?? false) {
+                      Provider.of<ProductList>(context, listen: false)
+                          .removeProduct(product);
+                    }
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
