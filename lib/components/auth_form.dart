@@ -66,8 +66,6 @@ class _AuthFormState extends State<AuthForm> {
     _formKey.currentState?.save();
     Auth auth = Provider.of(context, listen: false);
 
-    f
-
     try {
       if (_isLogin()) {
         await auth.signin(
