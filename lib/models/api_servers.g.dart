@@ -17,23 +17,27 @@ Map<String, dynamic> _$ApiServerToJson(ApiServer instance) => <String, dynamic>{
     };
 
 Api _$ApiFromJson(Map<String, dynamic> json) => Api(
-      firebase: json['firebase'] == null
+      firebaseSetting: json['firebaseSetting'] == null
           ? null
-          : Firebase.fromJson(json['firebase'] as Map<String, dynamic>),
+          : FirebaseSetting.fromJson(
+              json['firebaseSetting'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ApiToJson(Api instance) => <String, dynamic>{
-      'firebase': instance.firebase,
+      'firebaseSetting': instance.firebaseSetting,
     };
 
-Firebase _$FirebaseFromJson(Map<String, dynamic> json) => Firebase(
+FirebaseSetting _$FirebaseSettingFromJson(Map<String, dynamic> json) =>
+    FirebaseSetting(
       url: json['url'] as String?,
       signupNewUser: json['signupNewUser'] as String?,
       signinUser: json['signinUser'] as String?,
-    );
+    )..apiKey = json['apiKey'] as String?;
 
-Map<String, dynamic> _$FirebaseToJson(Firebase instance) => <String, dynamic>{
-      'url': instance.url,
-      'signupNewUser': instance.signupNewUser,
+Map<String, dynamic> _$FirebaseSettingToJson(FirebaseSetting instance) =>
+    <String, dynamic>{
       'signinUser': instance.signinUser,
+      'signupNewUser': instance.signupNewUser,
+      'url': instance.url,
+      'apiKey': instance.apiKey,
     };

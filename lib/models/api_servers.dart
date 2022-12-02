@@ -16,25 +16,26 @@ class ApiServer {
 
 @JsonSerializable()
 class Api {
-  Api({this.firebase});
+  Api({this.firebaseSetting});
 
   factory Api.fromJson(Map<String, dynamic> json) => _$ApiFromJson(json);
 
-  Firebase? firebase;
+  FirebaseSetting? firebaseSetting;
 
   Map<String, dynamic> toJson() => _$ApiToJson(this);
 }
 
 @JsonSerializable()
-class Firebase {
-  Firebase({this.url, this.signupNewUser, this.signinUser});
+class FirebaseSetting {
+  FirebaseSetting({this.url, this.signupNewUser, this.signinUser});
 
-  factory Firebase.fromJson(Map<String, dynamic> json) =>
-      _$FirebaseFromJson(json);
+  factory FirebaseSetting.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseSettingFromJson(json);
 
   String? signinUser;
   String? signupNewUser;
   String? url;
+  String? apiKey;
 
-  Map<String, dynamic> toJson() => _$FirebaseToJson(this);
+  Map<String, dynamic> toJson() => _$FirebaseSettingToJson(this);
 }

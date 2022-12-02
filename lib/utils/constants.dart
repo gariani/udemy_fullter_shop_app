@@ -2,9 +2,14 @@ import '../main.dart';
 import '../models/api_servers.dart';
 
 class Constants {
-  static Firebase? firebaseSetting = getIt<ApiServer>().api?.firebase;
-  static String orderBaseURL = '${firebaseSetting!.url}/orders';
-  static String productBaseURL = '${firebaseSetting!.url}/products';
-  static String signinURL = '${firebaseSetting!.signinUser}';
-  static String signupURL = '${firebaseSetting!.signupNewUser}';
+  static FirebaseSetting? firebaseSetting =
+      getIt<ApiServer>().api?.firebaseSetting;
+  static String orderBaseURL =
+      '${firebaseSetting!.url}/${firebaseSetting!.apiKey}/orders';
+  static String productBaseURL =
+      '${firebaseSetting!.url}/${firebaseSetting!.apiKey}/products';
+  static String signinURL =
+      '${firebaseSetting!.signinUser}${firebaseSetting!.apiKey}';
+  static String signupURL =
+      '${firebaseSetting!.signupNewUser}}${firebaseSetting!.apiKey}';
 }

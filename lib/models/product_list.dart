@@ -12,7 +12,7 @@ import '../utils/constants.dart';
 class ProductList with ChangeNotifier {
   ProductList(this._token, this._items);
 
-  final _baseUrl = '${getIt<ApiServer>().api?.firebase?.url}/products';
+  final _baseUrl = '${getIt<ApiServer>().api?.firebaseSetting?.url}/products';
   // ignore: prefer_final_fields
   List<Product> _items = [];
 
@@ -31,21 +31,23 @@ class ProductList with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${Constants.productBaseURL}.json?auth={$_token}'),
+      Uri.parse('${Constants.productBaseURL}.json'),
     );
 
     if (response.body == 'null') return;
 
     Map<String, dynamic> data = jsonDecode(response.body);
     data.forEach((productId, productData) {
-      _items.add(Product(
-        id: productId,
-        name: productData['name'],
-        description: productData['description'],
-        price: double.tryParse(productData['price'].toString())!,
-        imageUrl: productData['image'],
-        isFavorite: productData['isFavorite'],
-      ));
+      _items.add(
+        Product(
+          id: productId,
+          name: productData['name'],
+          description: productData['description'],
+          price: double.tryParse(productData['price'].toString())!,
+          imageUrl: productData['image'],
+          isFavorite: productData['isFavorite'],
+        ),
+      );
     });
     notifyListeners();
   }

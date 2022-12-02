@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,20 +18,36 @@ import 'pages/product_page.dart';
 import 'pages/products_overview_page.dart';
 import 'utils/app_routes.dart';
 import 'package:get_it/get_it.dart';
+import 'utils/firebase_options.dart';
 
 GetIt getIt = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await loadSettings();
+
   runApp(const MyApp());
 }
 
-Future loadSettings() async {
+Future _loadFirebaseAuth() async {
+  return await Firebase.initializeApp(
+    options: (Platform.isLinux || Platform.isWindows)
+        ? DefaultFirebaseOptions.web
+        : DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
+Future _loadFileSettings() async {
   final file = await rootBundle.loadString('assets/api/api.json');
   final jsonvalue = jsonDecode(file);
   ApiServer api = ApiServer.fromJson(jsonvalue);
   getIt.registerSingleton<ApiServer>(api, signalsReady: true);
+}
+
+Future loadSettings() async {
+  await _loadFileSettings();
+  await _loadFirebaseAuth();
 }
 
 class MyApp extends StatelessWidget {
