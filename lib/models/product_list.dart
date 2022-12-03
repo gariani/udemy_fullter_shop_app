@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../exceptions/http_exception.dart';
+import '../exceptions/saving_exception.dart';
 import '../main.dart';
 import 'api_servers.dart';
 import 'product.dart';
@@ -30,46 +32,43 @@ class ProductList with ChangeNotifier {
   Future<void> loadProducts() async {
     _items.clear();
 
-    final response = await http.get(
-      Uri.parse('${Constants.productBaseURL}.json'),
-    );
-
-    if (response.body == 'null') return;
-
-    Map<String, dynamic> data = jsonDecode(response.body);
-    data.forEach((productId, productData) {
-      _items.add(
-        Product(
-          id: productId,
-          name: productData['name'],
-          description: productData['description'],
-          price: double.tryParse(productData['price'].toString())!,
-          imageUrl: productData['image'],
-          isFavorite: productData['isFavorite'],
-        ),
-      );
-    });
-    notifyListeners();
+    final databaseProduct = FirebaseDatabase.instance.ref('/products');
+    final snapshot = await databaseProduct.get();
+    if (snapshot.exists) {
+      Map<String, dynamic> data = jsonDecode(jsonEncode(snapshot.value));
+      data.forEach((productId, productData) {
+        _items.add(
+          Product(
+            id: productId,
+            name: productData['name'],
+            description: productData['description'],
+            price: double.tryParse(productData['price'].toString())!,
+            imageUrl: productData['image'],
+            isFavorite: productData['isFavorite'],
+          ),
+        );
+      });
+      notifyListeners();
+    }
   }
 
   Future<void> addProduct(Product product) async {
-    final response = await http.post(
-      Uri.parse('${Constants.productBaseURL}.json'),
-      body: jsonEncode(
-        {
-          "name": product.name,
-          "description": product.description,
-          "price": product.price,
-          "image": product.imageUrl,
-          "isFavorite": product.isFavorite
-        },
-      ),
-    );
+    DatabaseReference child =
+        getIt<FirebaseDatabase>().ref('products').child(product.name);
 
-    final id = jsonDecode(response.body)['name'];
+    await child.set(
+      {
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "image": product.imageUrl,
+        "isFavorite": product.isFavorite
+      },
+    ).catchError((error) => throw SavingException());
+
     _items.add(
       Product(
-        id: id,
+        id: child.key.toString(),
         name: product.name,
         description: product.description,
         price: product.price,

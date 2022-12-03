@@ -1,0 +1,1 @@
+class SavingException implements Exception {}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/exceptions/saving_exception.dart';
 import '../models/product.dart';
 import '../models/product_list.dart';
 
@@ -53,6 +54,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   @override
   initState() {
     super.initState();
+    _imageUrlController.text =
+        'https://fashionsista.co/downloadpng/png/20200801/cart-food-grocery-shopping-supermarket-icon.jpg';
     _imageUrlFocus.addListener(updateImage);
   }
 
@@ -66,6 +69,22 @@ class _ProductFormPageState extends State<ProductFormPage> {
         url.toLowerCase().endsWith('.jpg') ||
         url.toLowerCase().endsWith('.jpeg');
     return isValidUrl && endsWithFile;
+  }
+
+  Future _dialogErrorMessage(String error) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Ocorreu um erro'),
+        content: Text(error.toString()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _submitForm(BuildContext context) async {
@@ -86,20 +105,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
           .saveProduct(_formData);
       if (!mounted) return;
       Navigator.of(context).pop();
+    } on SavingException {
+      _dialogErrorMessage('Error trying to save the product!');
     } catch (error) {
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Ocorreu um erro'),
-          content: Text(error.toString()),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Ok'),
-            ),
-          ],
-        ),
-      );
+      _dialogErrorMessage(error.toString());
     } finally {
       setState(() {
         _isLoading = false;

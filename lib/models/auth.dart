@@ -1,15 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class Auth with ChangeNotifier {
   String? _email;
+  bool? _isUserSignIn;
   String? _token;
   String? _uid;
-  bool? _isUserSignIn;
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   bool get isAuth {
     return _isUserSignIn ?? false;
@@ -38,9 +35,6 @@ class Auth with ChangeNotifier {
       }
     } on FirebaseAuthException catch (error) {
       final String errorMsg = "${error.code}: ${error.message}";
-      print(errorMsg);
-    } on UnimplementedError catch (error) {
-      print(error.message!);
     }
     return null;
   }

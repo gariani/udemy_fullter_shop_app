@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -30,24 +31,30 @@ void main() async {
   runApp(const MyApp());
 }
 
-Future _loadFirebaseAuth() async {
-  return await Firebase.initializeApp(
+Future<void> _loadFirebaseAuth() async {
+  await Firebase.initializeApp(
     options: (Platform.isLinux || Platform.isWindows)
         ? DefaultFirebaseOptions.web
         : DefaultFirebaseOptions.currentPlatform,
   );
 }
 
-Future _loadFileSettings() async {
+Future<void> _loadFileSettings() async {
   final file = await rootBundle.loadString('assets/api/api.json');
   final jsonvalue = jsonDecode(file);
   ApiServer api = ApiServer.fromJson(jsonvalue);
   getIt.registerSingleton<ApiServer>(api, signalsReady: true);
 }
 
+Future<void> _loadFirebaseDatabase() async {
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  getIt.registerSingleton<FirebaseDatabase>(database, signalsReady: true);
+}
+
 Future loadSettings() async {
   await _loadFileSettings();
   await _loadFirebaseAuth();
+  await _loadFirebaseDatabase();
 }
 
 class MyApp extends StatelessWidget {
