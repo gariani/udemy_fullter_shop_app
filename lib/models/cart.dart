@@ -1,14 +1,26 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'cart_item.dart';
 import 'product.dart';
 
-class Cart with ChangeNotifier {
-  Map<String, CartItem> _items = {};
+part 'cart.g.dart';
+part 'cart.freezed.dart';
 
-  Map<String, CartItem> get items {
-    return {..._items};
-  }
+@unfreezed
+class Cart with _$Cart {
+  factory Cart(
+      {required Map<String, CartItem> items,
+      required double totalAmount}) = _Cart;
+
+  factory Cart.fromJson(Map<String, Object?> json) => _$CartFromJson(json);
+}
+
+class CartNotifier with ChangeNotifier {
+  CartNotifier({required this.items});
+
+  Map<String, CartItem> items = {};
 
   int get itemsCount {
     return items.length;
@@ -16,15 +28,15 @@ class Cart with ChangeNotifier {
 
   double get totalAmount {
     double total = 0.0;
-    _items.forEach((key, cartItem) {
+    items.forEach((key, cartItem) {
       total += cartItem.price * cartItem.quantity;
     });
     return total;
   }
 
   void addItem(Product product) {
-    if (_items.containsKey(product.id)) {
-      _items.update(
+    if (items.containsKey(product.id)) {
+      items.update(
         product.id,
         (existingItem) => CartItem(
           id: existingItem.id,
@@ -35,7 +47,7 @@ class Cart with ChangeNotifier {
         ),
       );
     } else {
-      _items.putIfAbsent(
+      items.putIfAbsent(
         product.id,
         () => CartItem(
           id: Random().nextDouble().toString(),
@@ -50,19 +62,19 @@ class Cart with ChangeNotifier {
   }
 
   void removeItem(String productId) {
-    _items.remove(productId);
+    items.remove(productId);
     notifyListeners();
   }
 
   void removeSingleItem(String productId) {
-    if (!_items.containsKey(productId)) {
+    if (!items.containsKey(productId)) {
       return;
     }
 
-    if (_items[productId]?.quantity == 1) {
-      _items.remove(productId);
+    if (items[productId]?.quantity == 1) {
+      items.remove(productId);
     } else {
-      _items.update(
+      items.update(
         productId,
         (existingItem) => CartItem(
           id: existingItem.id,
@@ -77,7 +89,7 @@ class Cart with ChangeNotifier {
   }
 
   void clear() {
-    _items = {};
+    items = {};
     notifyListeners();
   }
 }

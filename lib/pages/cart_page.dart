@@ -10,7 +10,7 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Cart cart = Provider.of<Cart>(context);
+    final CartNotifier cart = Provider.of<CartNotifier>(context);
     final items = cart.items.values.toList();
 
     return Scaffold(
@@ -69,7 +69,7 @@ class CartButton extends StatefulWidget {
     required this.cart,
   }) : super(key: key);
 
-  final Cart cart;
+  final CartNotifier cart;
 
   @override
   State<CartButton> createState() => _CartButtonState();
@@ -87,7 +87,7 @@ class _CartButtonState extends State<CartButton> {
                 ? null
                 : () async {
                     setState(() => _isLoading = true);
-                    await Provider.of<OrderList>(
+                    await Provider.of<OrderListNotifier>(
                       context,
                       listen: false,
                     ).addOrder(widget.cart);

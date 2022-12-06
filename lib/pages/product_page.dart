@@ -10,7 +10,7 @@ class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
   Future<void> _refreshProducts(BuildContext context) {
-    return Provider.of<ProductList>(
+    return Provider.of<ProductListNotifier>(
       context,
       listen: false,
     ).loadProducts();
@@ -18,7 +18,7 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductList products = Provider.of(context);
+    final ProductListNotifier products = Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(

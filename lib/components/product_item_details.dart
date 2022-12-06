@@ -34,7 +34,7 @@ class ProductItemDetails extends StatelessWidget {
     ).then((value) async {
       if (value ?? false) {
         try {
-          await Provider.of<ProductList>(
+          await Provider.of<ProductListNotifier>(
             context,
             listen: false,
           ).removeProduct(product);
@@ -75,7 +75,7 @@ class ProductItemDetails extends StatelessWidget {
                 await confirmRemove(context).then(
                   (value) {
                     if (value ?? false) {
-                      Provider.of<ProductList>(context, listen: false)
+                      Provider.of<ProductListNotifier>(context, listen: false)
                           .removeProduct(product);
                     }
                   },

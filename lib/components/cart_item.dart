@@ -51,7 +51,7 @@ class CartItemWidget extends StatelessWidget {
         );
       },
       onDismissed: (_) {
-        Provider.of<Cart>(
+        Provider.of<CartNotifier>(
           context,
           listen: false,
         ).removeItem(cartItem.productId);

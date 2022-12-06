@@ -101,7 +101,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     });
 
     try {
-      await Provider.of<ProductList>(context, listen: false)
+      await Provider.of<ProductListNotifier>(context, listen: false)
           .saveProduct(_formData);
       if (!mounted) return;
       Navigator.of(context).pop();

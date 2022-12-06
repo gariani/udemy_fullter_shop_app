@@ -16,7 +16,8 @@ class OrdersPage extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
-        future: Provider.of<OrderList>(context, listen: false).loadOrders(),
+        future:
+            Provider.of<OrderListNotifier>(context, listen: false).loadOrders(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -27,7 +28,7 @@ class OrdersPage extends StatelessWidget {
               child: Text('Ocorreu um erro.'),
             );
           } else {
-            return Consumer<OrderList>(
+            return Consumer<OrderListNotifier>(
                 builder: (context, orders, child) => ListView.builder(
                       itemCount: orders.itemsCount,
                       itemBuilder: (context, index) =>

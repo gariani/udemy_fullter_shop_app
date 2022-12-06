@@ -1,46 +1,40 @@
-import 'dart:convert';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:shop_app/main.dart';
 
-import '../utils/constants.dart';
+part 'product.g.dart';
+part 'product.freezed.dart';
 
-class Product with ChangeNotifier {
-  Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-    this.isFavorite = false,
-  });
+@unfreezed
+class Product with _$Product {
+  factory Product({
+    required String id,
+    required String name,
+    required String description,
+    required double price,
+    required String imageUrl,
+    @Default(false) bool isFavorite,
+  }) = _Product;
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
+}
 
-  final String description;
-  final String id;
-  final String imageUrl;
-  bool isFavorite;
-  final String name;
-  final double price;
-
-  Future<void> toggleFavorite() async {
-    try {
-      _toggleFavorite();
-
-      final response = await http.patch(
-        Uri.parse('${Constants.productBaseURL}/$id.json'),
-        body: jsonEncode({"isFavorite": isFavorite}),
-      );
-
-      if (response.statusCode >= 400) {
-        _toggleFavorite();
-      }
-    } catch (error) {
-      _toggleFavorite();
-    }
-  }
+class ProductNotified with ChangeNotifier {
+  ProductNotified({required this.product});
+  final Product product;
 
   void _toggleFavorite() {
-    isFavorite = !isFavorite;
+    product.isFavorite = product.isFavorite;
     notifyListeners();
+  }
+
+  Future<void> toggleFavorite() async {
+    FirebaseDatabase database = getIt<FirebaseDatabase>();
+    _toggleFavorite();
+    await database.ref('products/$product.id').update(
+        {"isFavorite": product.isFavorite}).onError((error, stackTrace) {
+      _toggleFavorite();
+    });
   }
 }

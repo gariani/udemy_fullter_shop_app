@@ -5,27 +5,27 @@ import '../models/product.dart';
 import '../utils/app_routes.dart';
 
 class ProductGridItem extends StatelessWidget {
-  const ProductGridItem({Key? key}) : super(key: key);
+  const ProductGridItem({Key? key, required this.product}) : super(key: key);
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context, listen: false);
+    // final product = Provider.of<ProductNotified>(context, listen: false);
+    final cart = Provider.of<CartNotifier>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: Consumer<Product>(
-            builder: (ctx, product, _) => IconButton(
-              onPressed: () {
-                product.toggleFavorite();
-              },
-              icon: Icon(
-                  product.isFavorite ? Icons.favorite : Icons.favorite_border),
-              color: Theme.of(context).colorScheme.secondary,
-            ),
+          leading: IconButton(
+            onPressed: () {
+              product.toggleFavorite();
+            },
+            icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border),
+            color: Theme.of(context).colorScheme.secondary,
           ),
           title: Text(
             product.name,

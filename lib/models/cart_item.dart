@@ -1,15 +1,18 @@
-class CartItem {
-  CartItem({
-    required this.id,
-    required this.productId,
-    required this.name,
-    required this.quantity,
-    required this.price,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String name;
-  final double price;
-  final String productId;
-  final int quantity;
+part 'cart_item.g.dart';
+part 'cart_item.freezed.dart';
+
+@unfreezed
+class CartItem with _$CartItem {
+  factory CartItem({
+    required String id,
+    required String productId,
+    required String name,
+    required int quantity,
+    required double price,
+  }) = _CartItem;
+
+  factory CartItem.fromJson(Map<String, Object?> json) =>
+      _$CartItemFromJson(json);
 }

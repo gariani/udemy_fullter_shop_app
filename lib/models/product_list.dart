@@ -1,43 +1,48 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:uuid/uuid.dart';
 import '../exceptions/http_exception.dart';
 import '../exceptions/saving_exception.dart';
 import '../main.dart';
-import 'api_servers.dart';
 import 'product.dart';
 
-import '../utils/constants.dart';
+part 'product_list.g.dart';
+part 'product_list.freezed.dart';
 
-class ProductList with ChangeNotifier {
-  ProductList(this._token, this._items);
+@unfreezed
+class ProductList with _$ProductList {
+  factory ProductList({required List<Product> items}) = _ProductList;
 
-  final _baseUrl = '${getIt<ApiServer>().api?.firebaseSetting?.url}/products';
-  // ignore: prefer_final_fields
-  List<Product> _items = [];
+  factory ProductList.fromJson(Map<String, Object?> json) =>
+      _$ProductListFromJson(json);
+}
 
-  final String _token;
+class  ProductListNotifier with ChangeNotifier {
+  ProductListNotifier(this.items);
 
-  List<Product> get items => [..._items];
+  List<Product> items = [];
 
   List<Product> get favoriteItems =>
-      _items.where((prod) => prod.isFavorite).toList();
+      items.where((prod) => prod.isFavorite).toList();
+
+  List<Product> loadedProducts = [];
 
   int get itemsCount {
-    return _items.length;
+    return items.length;
   }
 
   Future<void> loadProducts() async {
-    _items.clear();
+    items.clear();
 
-    final databaseProduct = FirebaseDatabase.instance.ref('/products');
+    final databaseProduct = FirebaseDatabase.instance.ref('products');
     final snapshot = await databaseProduct.get();
     if (snapshot.exists) {
       Map<String, dynamic> data = jsonDecode(jsonEncode(snapshot.value));
       data.forEach((productId, productData) {
-        _items.add(
+        items.add(
           Product(
             id: productId,
             name: productData['name'],
@@ -53,8 +58,11 @@ class ProductList with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
+    const Uuid uuid = Uuid();
+    final String uuidStr = uuid.v4();
+
     DatabaseReference child =
-        getIt<FirebaseDatabase>().ref('products').child(product.name);
+        getIt<FirebaseDatabase>().ref('products').child(uuidStr);
 
     await child.set(
       {
@@ -66,9 +74,9 @@ class ProductList with ChangeNotifier {
       },
     ).catchError((error) => throw SavingException());
 
-    _items.add(
+    items.add(
       Product(
-        id: child.key.toString(),
+        id: uuidStr,
         name: product.name,
         description: product.description,
         price: product.price,
@@ -97,44 +105,46 @@ class ProductList with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product product) async {
-    int index = _items.indexWhere((element) => element.id == product.id);
+    int index = items.indexWhere((element) => element.id == product.id);
     if (index >= 0) {
-      await http.patch(
-        Uri.parse('${Constants.productBaseURL}/${product.id}.json'),
-        body: jsonEncode(
-          {
-            "name": product.name,
-            "description": product.description,
-            "price": product.price,
-            "image": product.imageUrl,
-          },
-        ),
+      final database = getIt<FirebaseDatabase>();
+      final itemUpdate = database.ref('products').child(product.id);
+
+      await itemUpdate.update(
+        {
+          "name": product.name,
+          "description": product.description,
+          "price": product.price,
+          "image": product.imageUrl,
+        },
       );
-      _items[index] = product;
+
+      items[index] = product;
       notifyListeners();
     }
   }
 
   Future<void> removeProduct(Product product) async {
-    int index = _items.indexWhere((element) => element.id == product.id);
+    int index = items.indexWhere((element) => element.id == product.id);
     if (index >= 0) {
-      final product = _items[index];
+      final product = items[index];
 
-      _items.remove(product);
+      items.remove(product);
       notifyListeners();
 
-      final response = await http.delete(
-        Uri.parse('$_baseUrl/${product.id}.json'),
-      );
+      final database = getIt<FirebaseDatabase>();
 
-      if (response.statusCode >= 400) {
-        _items.insert(index, product);
-        notifyListeners();
-        throw HttpException(
-          msg: 'Não foi possível excluir produto',
-          statusCode: response.statusCode,
-        );
-      }
+      final itemDelete = database.ref('products').child(product.id);
+      await itemDelete.remove().catchError(
+        (onError) {
+          items.insert(index, product);
+          notifyListeners();
+          throw HttpException(
+            msg: 'Não foi possível excluir produto',
+            statusCode: onError.hashCode,
+          );
+        },
+      );
     }
   }
 }

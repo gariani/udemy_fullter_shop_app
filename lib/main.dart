@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,8 @@ Future<void> _loadFirebaseAuth() async {
         ? DefaultFirebaseOptions.web
         : DefaultFirebaseOptions.currentPlatform,
   );
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  getIt.registerSingleton<FirebaseAuth>(auth, signalsReady: true);
 }
 
 Future<void> _loadFileSettings() async {
@@ -63,25 +66,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (_) => CartNotifier(items: {}),
+        ),
+        ChangeNotifierProvider(
           create: (_) => Auth(),
         ),
-        ChangeNotifierProxyProvider<Auth, ProductList>(
-          create: (_) => ProductList('', []),
+        ChangeNotifierProxyProvider<Auth, ProductListNotifier>(
+          create: (_) => ProductListNotifier([]),
           update: (context, auth, previous) {
-            return ProductList(
-              auth.token ?? '',
+            return ProductListNotifier(
               previous?.items ?? [],
             );
           },
         ),
         ChangeNotifierProvider(
-          create: (_) => Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => OrderList(),
+          create: (_) => OrderListNotifier(),
         ),
       ],
       child: MaterialApp(

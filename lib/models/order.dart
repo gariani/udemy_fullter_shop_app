@@ -1,15 +1,18 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'cart_item.dart';
 
-class Order {
-  Order({
-    required this.id,
-    required this.total,
-    required this.products,
-    required this.date,
-  });
+part 'order.g.dart';
+part 'order.freezed.dart';
 
-  final DateTime date;
-  final String id;
-  final List<CartItem> products;
-  final double total;
+@unfreezed
+class Order with _$Order {
+  factory Order({
+    required String id,
+    required double total,
+    required List<CartItem> products,
+    required DateTime date,
+  }) = _Order;
+
+  factory Order.fromJson(Map<String, Object?> json) => _$OrderFromJson(json);
 }

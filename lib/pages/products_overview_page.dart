@@ -27,7 +27,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProductList>(
+    Provider.of<ProductListNotifier>(
       context,
       listen: false,
     ).loadProducts().then((value) {
@@ -65,7 +65,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
               });
             },
           ),
-          Consumer<Cart>(
+          Consumer<CartNotifier>(
             child: IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(AppRoutes.cart);
